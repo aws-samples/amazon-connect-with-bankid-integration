@@ -7,7 +7,7 @@ logger.setLevel(logging.INFO)
 
 # NOTE: This sample code is for testing and development only.
 # It is STRONGLY recommended that this code is used as reference and proof of value.
-client = BankIDJSONClient(certificates=('cert.pem', 'key.pem'), test_server=True)
+client = BankIDJSONClient(certificates=('cert.pem', 'key.pem'), test_server=True, request_timeout=0.3)
 
 
 def lambda_handler(event, context):
@@ -24,7 +24,7 @@ def lambda_handler(event, context):
             # so long as any valid ip is passed, the call will work.
             # As the customer is calling and we have no access to their IP
             # a dummy IP is recommended for testing.
-            end_user_ip='194.168.2.25',
+            end_user_ip='0.0.0.0',
             personal_number=personnummer
         )
 
@@ -40,7 +40,7 @@ def lambda_handler(event, context):
     # The number of loops before terminiating the call is dependant on
     # the contact flow configuration.
     logger.info('Looping: checking status of authentication order.')
-    for _ in range(6):
+    for _ in range(5):
         status = status_collect(order_ref)
         logger.debug({ 'status': status })
 
