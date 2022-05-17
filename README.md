@@ -35,12 +35,22 @@ _For more information on BankID integration, please review their documentation [
 ### Deployment
 The Serverless Application Model Command Line Interface (SAM CLI) is an extension of the AWS CLI that adds functionality for building and testing Lambda applications.
 
+```bash
+# Optional
+# !!!! FOR BANK ID TESTING ENV ONLY !!!
+# This command only needs run once. Once the pem files have been generated there's no need to run this again.
+# This step is not required if using new or private certificates with BankID
+./get-latest-bankid-certificates.sh
+
+# You will be then requested to input the BankID Passphrase from
+# https://www.bankid.com/assets/bankid/rp/bankid-relying-party-guidelines-v3.6.pdf
+> Please enter the BankID Passphase:
+
+# It is not recommended to use a password as an argument in a bash script. However since the password is already on the public internet the scipt has been provided for convenience. Please use with caution and delete when progressing to personal or production certs.
+```
+
 In the terminal, use the SAM CLI guided deployment the first time you deploy.
 ```bash
-# This command only needs run once. Once the pem files have been generated there's no need to run this again.
-# This step can be modified if using new or private certificates with BankID
-./get-latest-bankid-certificates.sh PASSPHRASE
-
 sam build
 sam deploy --guided
 ```
