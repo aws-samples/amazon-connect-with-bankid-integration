@@ -1,4 +1,4 @@
-# Amazon Connect with BankID authentication
+# Amazon Connect with BankID authentication - Demo
 Securely identifying customers during an inbound call can be a legal requirement for many contact centers, especially in the financial industry. BankID is by far the largest electronic identification system in Sweden, with a current usage rate of 94% among smartphone users. With BankID, you get a stable and secure solution that the vast majority of your customers already use and trust.
 With Amazon Connect, you can build high-quality omnichannel voice and interactive chat experiences to support your customers from anywhere.
 
@@ -97,6 +97,13 @@ You will be asked:
 ## Delete the stack via the SAM CLI
 sam delete
 ```
+
+## Recommendation for Production credentials
+In this example we bundled the pem keys in with the lambda function for test and demo purposes. For a workload like this to be production ready it is **strongly** recommended to use a Secrets Manager to securely store your keys. Please review the resources below to implement a solution using AWS Secrets Manager:
+
+* [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) helps you protect secrets needed to access your applications, services, and IT resources.
+* [How to use AWS Secrets Manager to securely store and rotate SSH key pairs](https://aws.amazon.com/blogs/security/how-to-use-aws-secrets-manager-securely-store-rotate-ssh-key-pairs/)
+* [How to securely provide database credentials to Lambda functions by using AWS Secrets Manager](https://aws.amazon.com/blogs/security/how-to-securely-provide-database-credentials-to-lambda-functions-by-using-aws-secrets-manager/)
 
 ## License
 This library is licensed under the MIT-0 License. See the LICENSE file.
