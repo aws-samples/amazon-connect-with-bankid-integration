@@ -1,13 +1,13 @@
 import os
-import json
-import logging
 import boto3
+import jinja2
+import logging
 import cfnresponse
 
 from botocore.exceptions import ClientError
 
 
-CONTACT_FLOW = 'contact-flow.json'
+CONTACT_FLOW = 'contact-flow.template.json'
 CONTACT_FLOW_NAME = '0000 BankID Authentication'
 
 AUTH_ARN = os.environ['AUTH_ARN']
@@ -26,8 +26,7 @@ def lambda_handler(event, context):
     logger.info({ 'event': event })
 
     queue_arn = fetch_sample_basic_queue_arn()
-    template = load_content(CONTACT_FLOW)
-    content = update_content(template, queue_arn)
+    content = update_template(queue_arn)
 
     try:
         # Gracefully handle re-deployments
@@ -74,15 +73,6 @@ def update_contact_flow(content, contact_flow):
         'Arn': contact_flow['Arn']
     }
 
-def load_content(fn):
-    # Loads contact flow content from json file
-    logger.info('Loading content from %s', fn)
-    with open(fn, encoding='utf-8') as f:
-        content = json.load(f)
-
-    logger.debug({ 'content': content })
-    return content
-
 
 def fetch_sample_basic_queue_arn():
     # All Amazon Connect instances have a Sample Basic Queue
@@ -123,26 +113,14 @@ def fetch_contact_flow():
                 return i
 
 
-def update_content(content, queue_arn):
-    # The contact flow was pre-generated which provided the identifiers.
-    # The identifiers used below are fixed in the contact flow configuration
-    # and are used to automate the process of replacing the Arns that are unique
-    # to the Amazon account that the solution will be deployed to.
-
+def update_template(queue_arn):
+    # The contact flow template needs updated with the account
+    # specific ARNs for the Sample Working Queue and Lambda Function
     logger.info('Updating content with account specific Arns.')
-    # This identifier relates to metadata of a block that sets the working queue
-    queue = content['Metadata']['ActionMetadata']['bb212c4b-3f98-4080-b533-fe9d2ca36b70']
-    queue['queue']['id'] = queue_arn
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader("./"))
+    temp = env.get_template(CONTACT_FLOW)
 
-    for i in content['Actions']:
-        # This identifier relates to the block that invokes a new lambda function
-        if i['Identifier'] == '2367a288-95db-4535-ad4f-7d70be3636a9':
-            logger.info('Identified block and replacing Lambda ARN.')
-            i['Parameters']['LambdaFunctionARN'] = AUTH_ARN
-
-        # This identifier relates to a block that sets the working queue
-        elif i['Identifier'] == 'bb212c4b-3f98-4080-b533-fe9d2ca36b70':
-            logger.info('Identified block and replacing queue ARN.')
-            i['Parameters']['QueueId'] = queue_arn
-
-    return json.dumps(content)
+    return temp.render(
+        LAMBDA_FUNCTION_ARN=AUTH_ARN,
+        SAMPLE_QUEUE_ARN=queue_arn
+    )
