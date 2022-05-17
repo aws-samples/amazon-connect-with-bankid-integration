@@ -4,11 +4,15 @@ With Amazon Connect, you can build high-quality omnichannel voice and interactiv
 
 This code will set up a contact flow/IVR for real time authentication with Mobile BankID and can be deployed in minutes.
 
+![contact flow](images/contact-flow.png)
+
 Important: this application uses various AWS services and there are costs associated with these services after the Free Tier usage - please see the [AWS Pricing page](https://aws.amazon.com/pricing/) for details. You are responsible for any AWS costs incurred. No warranty is implied in this example.
 
 ### Services used
 * [Amazon Connect](https://aws.amazon.com/connect/)
 * [AWS Lambda](https://aws.amazon.com/connect/)
+
+![architecture](images/architecture.png)
 
 ### Requirements for deployment
 * An [Amazon account](https://aws.amazon.com/console/)
@@ -43,6 +47,7 @@ sam deploy --guided
 
 Before testing, you will need to configure the new contact flow/IVR to your claimed phone number. If you need to claim a new phone number follow these [instructions](https://docs.aws.amazon.com/connect/latest/adminguide/claim-phone-number.html). You can then associate your new `0000 BankID Authentication` to your claimed number by following these [instructions](https://docs.aws.amazon.com/connect/latest/adminguide/associate-phone-number.html).
 Now your new contact flow is ready to try out!
+
 
 #### Choose options
 You can choose the default options, however remember to pass in the Arn for your Amazon Connect instance or the deployment will not be sucessful.
